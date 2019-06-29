@@ -12,7 +12,8 @@ def cli():
 @click.command()
 @click.option('--env', '-e', default='local', help='location where the project will be build',
               type=click.Choice(['local', 'docker', 'ec2']), show_default=True)
-@click.option('--path', '-p', prompt='File name or top level directory to package', help='file or directory to package')
+@click.option('--path', '-p', prompt='File name or top level directory to package',
+              help='file or directory to package')
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
               show_default=True)
 @click.option('--dependencies', '-d', default=None, help='comma separated list of dependencies')

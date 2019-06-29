@@ -13,6 +13,7 @@ install:
 script:
   - pycodestyle --max-line-length 119 lambdafy
   - coverage run -m unittest discover lambdafy
+  - python setup.py bdist_wheel
 after_success:
   - coverage report
   - coveralls
