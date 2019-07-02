@@ -2,6 +2,7 @@ import os
 import click
 
 import lambdafy.build as lb
+import lambdafy.deploy as ld
 
 
 @click.group()
@@ -40,9 +41,14 @@ def build(env, path, requirements_file, dependencies):
 
 @click.command()
 @click.option('--function-name', '-f', prompt='Lambda Function Name', help='lambda function name')
-@click.option('--handler', '-h', prompt='Lambda Function Handler', help='lambda function handler')
-def deploy(function_name, handler):
-    click.echo((function_name, handler))
+@click.option('--aws-access-key', '-k', default=None, help='AWS Access Key')
+@click.option('--aws-secret-key', '-s', default=None, help='AWS Secret Key')
+@click.option('--aws-region', '-r', default=None, help='AWS Region')
+def deploy(function_name, aws_access_key, aws_secret_key, aws_region):
+    try:
+        ld.deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region)
+    except ValueError as ex:
+        click.secho(str(ex), fg='red')
 
 
 cli.add_command(build)

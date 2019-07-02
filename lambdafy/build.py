@@ -3,9 +3,7 @@ import os
 import shutil
 import subprocess
 
-WORK_DIR = '.lambdafy'
-PACKAGE_DIR = WORK_DIR + '/package'
-PACKAGE_NAME = WORK_DIR + '/lambda_package'
+from lambdafy.config import *
 
 
 def __clean__():
