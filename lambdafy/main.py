@@ -1,6 +1,7 @@
 import os
 import click
 
+import lambdafy
 import lambdafy.build as lb
 import lambdafy.deploy as ld
 
@@ -11,9 +12,14 @@ def cli():
 
 
 @click.command()
+def version():
+    click.echo('lambdafy v{}'.format(lambdafy.__version__))
+
+
+@click.command()
 @click.option('--env', '-e', default='local', help='location where the project will be build',
               type=click.Choice(['local', 'docker', 'ec2']), show_default=True)
-@click.option('--path', '-p', prompt='File name or top level directory to package',
+@click.option('--path', '-p', prompt='File name or top level directory name',
               help='file or directory to package')
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
               show_default=True)
@@ -51,5 +57,6 @@ def deploy(function_name, aws_access_key, aws_secret_key, aws_region):
         click.secho(str(ex), fg='red')
 
 
+cli.add_command(version)
 cli.add_command(build)
 cli.add_command(deploy)
