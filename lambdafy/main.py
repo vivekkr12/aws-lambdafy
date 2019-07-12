@@ -1,4 +1,6 @@
 import os
+import platform
+
 import click
 
 import lambdafy
@@ -13,18 +15,35 @@ def cli():
 
 @click.command()
 def version():
-    click.echo('lambdafy v{}'.format(lambdafy.__version__))
+    python_version = platform.python_version()
+    os_name = os.name
+    platform_name = platform.system()
+    release_version = platform.release()
+    arch = platform.architecture()
+    click.echo('lambdafy {}\n'
+               'Python {}\n'
+               '{} {} {} {}'
+               .format(lambdafy.__version__, python_version, os_name, platform_name, arch[0], release_version))
 
 
 @click.command()
 @click.option('--env', '-e', default='local', help='location where the project will be build',
               type=click.Choice(['local', 'docker', 'ec2']), show_default=True)
+@click.option('--python-version', '-v', default='3', help='python version if using docker or ec2 build',
+              type=click.Choice(['2', '3']))
 @click.option('--path', '-p', prompt='File name or top level directory name',
               help='file or directory to package')
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
               show_default=True)
 @click.option('--dependencies', '-d', default=None, help='comma separated list of dependencies')
 def build(env, path, requirements_file, dependencies):
+    python_version = platform.python_version()
+    click.echo('using python version {} for building.\n'
+               'local build uses the runtime configured in the environment.\n'
+               'docker and ec2 build defaults to python 3\n'
+               'use the --python-version parameter to specify another version if required'
+               .format(python_version))
+
     dependencies_list = []
     if dependencies is not None:
         dependencies_list = dependencies.split(',')
