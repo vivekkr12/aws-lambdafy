@@ -1,33 +1,48 @@
 import os
+import platform
 
 import shutil
 import subprocess
 
 from lambdafy.config import *
 
+from lambdafy.logger import lambdafy_logger as logger
+
 
 def __clean__():
     shutil.rmtree(WORK_DIR, ignore_errors=True)
+    logger.info('build directory {} cleaned'.format(WORK_DIR))
 
 
 def __copy_src__(path):
     if os.path.isfile(path):
-        os.makedirs(PACKAGE_DIR, exist_ok=True)
+        os.makedirs(PACKAGE_DIR)
         shutil.copy(path, PACKAGE_DIR)
     else:
         shutil.copytree(path, PACKAGE_DIR)
+    logger.info('source files copied into package')
 
 
 def __install__(dependencies_list):
     for dep in dependencies_list:
         subprocess.call(['pip', 'install', '--target', PACKAGE_DIR, dep])
+    logger.info('dependencies installed into the package')
 
 
 def __zip__():
     shutil.make_archive(PACKAGE_NAME, 'zip', PACKAGE_DIR)
+    logger.info('package archived into a zip file, check the directory: {}'.format(PACKAGE_DIR))
 
 
 def local_build(path, dependencies_list):
+    # check if local build is running inside docker container
+    if os.path.isfile('./.dockerenv'):
+        logger.info('starting build inside docker container using python {} installed in the container'
+                    .format(platform.python_version()))
+    else:
+        logger.info('starting local build using python {} installed in the environment'
+                    .format(platform.python_version()))
+
     __clean__()
     __copy_src__(path)
     __install__(dependencies_list)
@@ -35,6 +50,9 @@ def local_build(path, dependencies_list):
 
 
 def docker_build(path, dependencies_list, python_version):
+    logger.info('starting docker build using python {}. This will internally call local build inside a docker container'
+                .format(python_version))
+
     cwd = os.getcwd()
     py_env = None
     if python_version == '2':

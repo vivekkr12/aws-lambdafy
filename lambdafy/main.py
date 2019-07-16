@@ -7,6 +7,8 @@ import lambdafy
 import lambdafy.build as lb
 import lambdafy.deploy as ld
 
+from lambdafy.logger import lambdafy_logger as logger
+
 
 @click.group()
 def cli():
@@ -37,15 +39,14 @@ def version():
               show_default=True)
 @click.option('--dependencies', '-d', default=None, help='comma separated list of dependencies')
 def build(env, path, requirements_file, dependencies, python_version):
-
     dependencies_list = []
     if dependencies is not None:
         dependencies_list = dependencies.split(',')
     else:
         if not os.path.isfile(requirements_file):
-            click.secho('neither a requirements file was provided nor dependencies were provided as argument.\n'
-                        'no dependencies will be packaged.\n'
-                        'you can ignore this warning if your project has no dependencies', fg='red')
+            logger.warning('neither a requirements file was provided nor dependencies were provided as argument.'
+                           'no dependencies will be packaged.'
+                           'you can ignore this warning if your project has no dependencies')
         else:
             with open(requirements_file, 'r') as req:
                 dependencies_list = req.read().splitlines()
@@ -67,7 +68,7 @@ def deploy(function_name, aws_access_key, aws_secret_key, aws_region):
     try:
         ld.deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region)
     except ValueError as ex:
-        click.secho(str(ex), fg='red')
+        logger.error(str(ex))
 
 
 cli.add_command(version)
