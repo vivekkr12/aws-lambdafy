@@ -30,19 +30,13 @@ def version():
 @click.option('--env', '-e', default='local', help='location where the project will be build',
               type=click.Choice(['local', 'docker', 'ec2']), show_default=True)
 @click.option('--python-version', '-v', default='3', help='python version if using docker or ec2 build',
-              type=click.Choice(['2', '3']))
+              type=click.Choice(['2', '3']), show_default=True)
 @click.option('--path', '-p', prompt='File name or top level directory name',
               help='file or directory to package')
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
               show_default=True)
 @click.option('--dependencies', '-d', default=None, help='comma separated list of dependencies')
-def build(env, path, requirements_file, dependencies):
-    python_version = platform.python_version()
-    click.echo('using python version {} for building.\n'
-               'local build uses the runtime configured in the environment.\n'
-               'docker and ec2 build defaults to python 3\n'
-               'use the --python-version parameter to specify another version if required'
-               .format(python_version))
+def build(env, path, requirements_file, dependencies, python_version):
 
     dependencies_list = []
     if dependencies is not None:
@@ -54,14 +48,14 @@ def build(env, path, requirements_file, dependencies):
                         'you can ignore this warning if your project has no dependencies', fg='red')
         else:
             with open(requirements_file, 'r') as req:
-                dependencies_list = req.readlines()
+                dependencies_list = req.read().splitlines()
 
     if env == 'local':
         lb.local_build(path, dependencies_list)
     elif env == 'docker':
-        lb.docker_build(path, dependencies_list)
+        lb.docker_build(path, dependencies_list, python_version)
     elif env == 'ec2':
-        lb.ec2_build(path, dependencies_list)
+        lb.ec2_build(path, dependencies_list, python_version)
 
 
 @click.command()

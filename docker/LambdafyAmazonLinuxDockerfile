@@ -1,0 +1,25 @@
+FROM amazonlinux:latest
+RUN yum -y update
+RUN yum -y install python3
+RUN yum -y install git
+RUN pip3 install virtualenv
+RUN mkdir pyenvironments
+WORKDIR /lambdafy/work
+
+# add entrypoint script
+ADD docker/entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod 777 /usr/bin/entrypoint.sh
+
+# Create virtual environments
+RUN virtualenv --python=python /pyenvironments/pyenv2
+RUN virtualenv --python=python3 /pyenvironments/pyenv3
+
+# install lambdafy
+RUN source /pyenvironments/pyenv2/bin/activate && \
+    pip install git+https://github.com/vivekkr12/aws-lambdafy.git@master && \
+    lambdafy version
+RUN source /pyenvironments/pyenv3/bin/activate && \
+    pip install git+https://github.com/vivekkr12/aws-lambdafy.git@master && \
+    lambdafy version
+
+CMD ["entrypoint.sh"]
