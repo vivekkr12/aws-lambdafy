@@ -50,8 +50,8 @@ def local_build(path, dependencies_list):
 
 
 def docker_build(path, dependencies_list, python_version):
-    logger.info('starting docker build using python {}. This will internally call local build inside a docker container'
-                .format(python_version))
+    logger.info('starting docker build using python {}. This will internally call local build inside '
+                'a docker container'.format(python_version))
 
     cwd = os.getcwd()
     py_env = None
