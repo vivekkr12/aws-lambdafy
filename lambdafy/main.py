@@ -38,7 +38,9 @@ def version():
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
               show_default=True)
 @click.option('--dependencies', '-d', default=None, help='comma separated list of dependencies')
-def build(env, path, requirements_file, dependencies, python_version):
+@click.option('--aws-access-key', '-k', default=None, help='AWS Access Key')
+@click.option('--aws-secret-key', '-s', default=None, help='AWS Secret Key')
+def build(env, path, requirements_file, dependencies, python_version, aws_access_key, aws_secret_key):
     dependencies_list = []
     if dependencies is not None:
         dependencies_list = dependencies.split(',')
@@ -56,7 +58,7 @@ def build(env, path, requirements_file, dependencies, python_version):
     elif env == 'docker':
         lb.docker_build(path, dependencies_list, python_version)
     elif env == 'ec2':
-        lb.ec2_build(path, dependencies_list, python_version)
+        lb.ec2_build(path, dependencies_list, python_version, aws_access_key, aws_secret_key)
 
 
 @click.command()

@@ -1,11 +1,8 @@
 import boto3
-import click
-
 import dateutil.parser as df
 from dateutil import tz
 
 from lambdafy.config import *
-
 from lambdafy.logger import lambdafy_logger as logger
 
 
