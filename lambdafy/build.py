@@ -9,12 +9,12 @@ from lambdafy.config import *
 from lambdafy.logger import lambdafy_logger as logger
 
 
-def __clean__():
+def _clean():
     shutil.rmtree(WORK_DIR, ignore_errors=True)
     logger.info('build directory {} cleaned'.format(WORK_DIR))
 
 
-def __copy_src__(path):
+def _copy_src(path):
     if os.path.isfile(path):
         os.makedirs(PACKAGE_DIR)
         shutil.copy(path, PACKAGE_DIR)
@@ -23,13 +23,13 @@ def __copy_src__(path):
     logger.info('source files copied into package')
 
 
-def __install__(dependencies_list):
+def _install(dependencies_list):
     for dep in dependencies_list:
         subprocess.call(['pip', 'install', '--target', PACKAGE_DIR, dep])
     logger.info('dependencies installed into the package')
 
 
-def __zip__():
+def _zip():
     shutil.make_archive(PACKAGE_NAME, 'zip', PACKAGE_DIR)
     logger.info('package archived into a zip file, check the directory: {}'.format(PACKAGE_DIR))
 
@@ -43,10 +43,10 @@ def local_build(path, dependencies_list):
         logger.info('starting local build using python {} installed in the environment'
                     .format(platform.python_version()))
 
-    __clean__()
-    __copy_src__(path)
-    __install__(dependencies_list)
-    __zip__()
+    _clean()
+    _copy_src(path)
+    _install(dependencies_list)
+    _zip()
 
 
 def docker_build(path, dependencies_list, python_version):
@@ -71,4 +71,4 @@ def docker_build(path, dependencies_list, python_version):
 
 
 def ec2_build(path, dependencies_list, python_version):
-    __install__(dependencies_list)
+    _install(dependencies_list)

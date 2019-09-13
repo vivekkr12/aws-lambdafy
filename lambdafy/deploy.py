@@ -36,11 +36,11 @@ def deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region):
     response = lambda_client.update_function_code(FunctionName=function_name, ZipFile=file_content)
     function_name = response['FunctionName']
     last_modified = response['LastModified']
-    last_modified_local = __to_local_timezone__(last_modified)
+    last_modified_local = _to_local_timezone(last_modified)
     logger.info('deploy success - {} last modified at {}'.format(function_name, last_modified_local))
 
 
-def __to_local_timezone__(d):
+def _to_local_timezone(d):
     ts_utc = df.parse(d)
 
     from_zone = tz.tzutc()
