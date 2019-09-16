@@ -3,6 +3,7 @@ RUN yum -y update
 RUN yum -y install python3
 RUN yum -y install git
 RUN yum -y install dos2unix
+RUN yum -y install gcc
 RUN pip3 install virtualenv
 RUN mkdir pyenvironments
 WORKDIR /lambdafy/work
