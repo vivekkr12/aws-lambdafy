@@ -44,7 +44,7 @@ def deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region, s3_
         response = lambda_client.update_function_code(FunctionName=function_name, ZipFile=file_content)
     else:
         s3_key = PACKAGE_NAME + '.zip'
-        logger.info('uploading file to s3 bucket {}', s3_bucket)
+        logger.info('uploading file to s3 bucket {}'.format(s3_bucket))
         s3_transfer = S3Transfer(s3_client)
         s3_transfer.upload_file(PACKAGE_NAME + '.zip', s3_bucket, PACKAGE_NAME + '.zip')
 
