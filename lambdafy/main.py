@@ -31,8 +31,8 @@ def version():
 @click.command()
 @click.option('--env', '-e', default='local', help='location where the project will be build',
               type=click.Choice(['local', 'docker', 'ec2']), show_default=True)
-@click.option('--python-version', '-v', default='3', help='python version if using docker or ec2 build',
-              type=click.Choice(['2', '3']), show_default=True)
+@click.option('--python-version', '-v', default='3.6', help='python version if using docker or ec2 build',
+              show_default=True)
 @click.option('--path', '-p', prompt='File name or top level directory name',
               help='file or directory to package')
 @click.option('--requirements-file', '-r', default='requirements.txt', help='pip compatible requirements file',
