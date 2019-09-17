@@ -64,9 +64,10 @@ def build(env, path, requirements_file, dependencies, python_version):
 @click.option('--aws-access-key', '-k', default=None, help='AWS Access Key')
 @click.option('--aws-secret-key', '-s', default=None, help='AWS Secret Key')
 @click.option('--aws-region', '-r', default=None, help='AWS Region')
-def deploy(function_name, aws_access_key, aws_secret_key, aws_region):
+@click.option('--s3-bucket', '-b', default=None, help='S3 bucket name, must be in same region as the function')
+def deploy(function_name, aws_access_key, aws_secret_key, aws_region, s3_bucket):
     try:
-        ld.deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region)
+        ld.deploy_lambda(function_name, aws_access_key, aws_secret_key, aws_region, s3_bucket)
     except ValueError as ex:
         logger.error(str(ex))
 
