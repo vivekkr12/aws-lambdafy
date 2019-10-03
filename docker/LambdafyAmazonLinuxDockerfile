@@ -1,11 +1,15 @@
 FROM amazonlinux:latest
 RUN yum -y update
-RUN yum -y install python3
 RUN yum -y install git
 RUN yum -y install dos2unix
 RUN yum -y install gcc
-RUN pip3 install virtualenv
-RUN mkdir pyenvironments
+RUN yum -y install wget
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    chmod 755 Miniconda3-latest-Linux-x86_64.sh
+
+RUN ./Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda && /miniconda/condabin/conda init && source /root/.bashrc
+RUN rm Miniconda3-latest-Linux-x86_64.sh
+
 WORKDIR /lambdafy/work
 
 # add entrypoint script
@@ -14,17 +18,5 @@ RUN chmod 777 /usr/bin/entrypoint.sh
 
 # on windows devices shell script line endings can be different which won't work in linux, thus changing it
 RUN dos2unix /usr/bin/entrypoint.sh
-
-# Create virtual environments
-RUN virtualenv --python=python /pyenvironments/pyenv2
-RUN virtualenv --python=python3 /pyenvironments/pyenv3
-
-# install lambdafy
-RUN source /pyenvironments/pyenv2/bin/activate && \
-    pip install git+https://github.com/vivekkr12/aws-lambdafy.git@master && \
-    lambdafy version
-RUN source /pyenvironments/pyenv3/bin/activate && \
-    pip install git+https://github.com/vivekkr12/aws-lambdafy.git@master && \
-    lambdafy version
 
 CMD ["entrypoint.sh"]

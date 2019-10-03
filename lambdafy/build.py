@@ -54,17 +54,12 @@ def docker_build(path, dependencies_list, python_version):
                 'a docker container'.format(python_version))
 
     cwd = os.getcwd()
-    py_env = None
-    if python_version == '2':
-        py_env = PY_ENV_2
-    elif python_version == '3':
-        py_env = PY_ENV_3
 
     build_path_env = path
     dependencies_list_env = ','.join(dependencies_list)
 
     subprocess.call(['docker', 'run', '--rm', '-v', cwd + ':' + DOCKER_WORKDIR,
-                     '-e', 'py_env=' + py_env,
+                     '-e', 'python_version=' + python_version,
                      '-e', 'build_path=' + build_path_env,
                      '-e', 'dependencies_list=' + dependencies_list_env,
                      DOCKER_IMAGE])
